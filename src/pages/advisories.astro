@@ -1,0 +1,156 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SearchBar from '../components/SearchBar.astro';
+import AdvisoryCard from '../components/AdvisoryCard.astro';
+import { getCollection } from 'astro:content';
+
+// Get all advisories
+const advisories = await getCollection('advisories');
+
+// Sort by publish date, newest first
+const sortedAdvisories = advisories.sort((a, b) => {
+  return new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime();
+});
+---
+
+<Layout title="All Security Advisories | 0daysec">
+  <section class="py-8">
+    <div class="max-w-3xl mx-auto text-center mb-8">
+      <h1 class="text-3xl md:text-4xl font-display text-white mb-4">All Security Advisories</h1>
+      <p class="text-gray-400">
+        Browse our complete collection of security vulnerability reports and technical writeups
+      </p>
+    </div>
+    
+    <div class="mb-10">
+      <SearchBar />
+    </div>
+    
+    <div class="mb-8">
+      <div class="bg-cyberdark-800 rounded-lg p-4 flex flex-wrap gap-4">
+        <div>
+          <label for="severity-filter" class="block text-sm font-medium text-gray-400 mb-1">Severity</label>
+          <select id="severity-filter" class="bg-cyberdark-700 border-cyberdark-600 text-white rounded-md px-3 py-2 text-sm">
+            <option value="">All Severities</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="status-filter" class="block text-sm font-medium text-gray-400 mb-1">Patch Status</label>
+          <select id="status-filter" class="bg-cyberdark-700 border-cyberdark-600 text-white rounded-md px-3 py-2 text-sm">
+            <option value="">All Statuses</option>
+            <option value="Patched">Patched</option>
+            <option value="Unpatched">Unpatched</option>
+            <option value="Partial">Partial</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="vendor-filter" class="block text-sm font-medium text-gray-400 mb-1">Vendor</label>
+          <select id="vendor-filter" class="bg-cyberdark-700 border-cyberdark-600 text-white rounded-md px-3 py-2 text-sm">
+            <option value="">All Vendors</option>
+            <!-- This would be populated dynamically in a full implementation -->
+            <option value="Microsoft">Microsoft</option>
+            <option value="Adobe">Adobe</option>
+            <option value="Oracle">Oracle</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="year-filter" class="block text-sm font-medium text-gray-400 mb-1">Year</label>
+          <select id="year-filter" class="bg-cyberdark-700 border-cyberdark-600 text-white rounded-md px-3 py-2 text-sm">
+            <option value="">All Years</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+          </select>
+        </div>
+        
+        <div class="flex items-end">
+          <button id="reset-filters" class="bg-cyberdark-700 hover:bg-cyberdark-600 text-white px-3 py-2 rounded-md text-sm">
+            Reset Filters
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="advisories-grid">
+      {sortedAdvisories.map((advisory) => (
+        <AdvisoryCard
+          title={advisory.data.title}
+          description={advisory.data.description}
+          publishDate={new Date(advisory.data.publishDate)}
+          cveId={advisory.data.cveId}
+          vendor={advisory.data.vendor}
+          severity={advisory.data.severity}
+          patchStatus={advisory.data.patchStatus}
+          slug={advisory.slug}
+        />
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Simple filtering functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const severityFilter = document.getElementById('severity-filter') as HTMLSelectElement;
+    const statusFilter = document.getElementById('status-filter') as HTMLSelectElement;
+    const vendorFilter = document.getElementById('vendor-filter') as HTMLSelectElement;
+    const yearFilter = document.getElementById('year-filter') as HTMLSelectElement;
+    const resetButton = document.getElementById('reset-filters');
+    
+    const advisoryCards = document.querySelectorAll('#advisories-grid > article');
+    
+    function applyFilters() {
+      const severity = severityFilter.value;
+      const status = statusFilter.value;
+      const vendor = vendorFilter.value;
+      const year = yearFilter.value;
+      
+      advisoryCards.forEach(card => {
+        let shouldShow = true;
+        
+        // This is a simplified example. In a real implementation,
+        // you'd need data attributes on the cards for filtering
+        
+        // For now, just simulate filtering based on presence of text
+        if (severity && !card.textContent?.includes(severity)) {
+          shouldShow = false;
+        }
+        
+        if (status && !card.textContent?.includes(status)) {
+          shouldShow = false;
+        }
+        
+        if (vendor && !card.textContent?.includes(vendor)) {
+          shouldShow = false;
+        }
+        
+        if (year && !card.textContent?.includes(year)) {
+          shouldShow = false;
+        }
+        
+        card.classList.toggle('hidden', !shouldShow);
+      });
+    }
+    
+    function resetFilters() {
+      severityFilter.value = '';
+      statusFilter.value = '';
+      vendorFilter.value = '';
+      yearFilter.value = '';
+      advisoryCards.forEach(card => card.classList.remove('hidden'));
+    }
+    
+    severityFilter?.addEventListener('change', applyFilters);
+    statusFilter?.addEventListener('change', applyFilters);
+    vendorFilter?.addEventListener('change', applyFilters);
+    yearFilter?.addEventListener('change', applyFilters);
+    resetButton?.addEventListener('click', resetFilters);
+  });
+</script>

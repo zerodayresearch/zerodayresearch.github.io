@@ -1,0 +1,108 @@
+---
+import { formatDate } from '../utils/dates';
+
+interface Props {
+  title: string;
+  description?: string;
+  publishDate: Date;
+  cveId?: string;
+  vendor?: string;
+  severity?: 'Critical' | 'High' | 'Medium' | 'Low';
+  patchStatus?: 'Patched' | 'Unpatched' | 'Partial';
+  slug: string;
+}
+
+const {
+  title,
+  description,
+  publishDate,
+  cveId,
+  vendor,
+  severity = 'Medium',
+  patchStatus = 'Patched',
+  slug,
+} = Astro.props;
+
+// Get severity color
+const getSeverityColor = (severity: string) => {
+  switch (severity) {
+    case 'Critical':
+      return 'bg-cyberred-500';
+    case 'High':
+      return 'bg-orange-500';
+    case 'Medium':
+      return 'bg-yellow-500';
+    case 'Low':
+      return 'bg-cybergreen-500';
+    default:
+      return 'bg-gray-500';
+  }
+};
+
+// Get patch status color
+const getPatchStatusColor = (status: string) => {
+  switch (status) {
+    case 'Patched':
+      return 'bg-cybergreen-500';
+    case 'Unpatched':
+      return 'bg-cyberred-500';
+    case 'Partial':
+      return 'bg-orange-500';
+    default:
+      return 'bg-gray-500';
+  }
+};
+
+const severityColor = getSeverityColor(severity);
+const patchStatusColor = getPatchStatusColor(patchStatus);
+---
+
+<article class="bg-cyberdark-800 rounded-lg overflow-hidden transition-transform hover:translate-y-[-2px] hover:shadow-lg">
+  <a href={`/advisory/${slug}`} class="block h-full">
+    <div class="p-5">
+      <div class="flex flex-wrap gap-2 mb-3">
+        {severity && (
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white border border-opacity-20" style={`background-color: ${getSeverityColor(severity).replace('bg-', '')}`}>
+            {severity}
+          </span>
+        )}
+        
+        {patchStatus && (
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white border border-opacity-20" style={`background-color: ${getPatchStatusColor(patchStatus).replace('bg-', '')}`}>
+            {patchStatus}
+          </span>
+        )}
+        
+        {cveId && (
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyberdark-700 text-white">
+            {cveId}
+          </span>
+        )}
+      </div>
+      
+      <h2 class="text-xl font-display text-white mb-2">{title}</h2>
+      
+      {description && (
+        <p class="text-gray-400 text-sm mb-4 line-clamp-2">
+          {description}
+        </p>
+      )}
+      
+      <div class="flex justify-between items-center text-sm text-gray-400 mt-4">
+        <div class="flex items-center">
+          {vendor && (
+            <span class="mr-3">{vendor}</span>
+          )}
+        </div>
+        <time datetime={publishDate.toISOString()}>
+          {formatDate(publishDate)}
+        </time>
+      </div>
+    </div>
+    
+    <div class="px-5 py-3 bg-cyberdark-700 text-sm text-gray-300 flex justify-between items-center">
+      <span>Read full advisory</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+    </div>
+  </a>
+</article>

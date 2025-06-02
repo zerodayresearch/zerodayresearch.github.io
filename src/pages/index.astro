@@ -1,0 +1,135 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SearchBar from '../components/SearchBar.astro';
+import FeaturedAdvisory from '../components/FeaturedAdvisory.astro';
+import AdvisoryCard from '../components/AdvisoryCard.astro';
+import { getCollection } from 'astro:content';
+
+// Get all advisories
+const advisories = await getCollection('advisories');
+
+// Sort by publish date, newest first
+const sortedAdvisories = advisories.sort((a, b) => {
+  return new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime();
+});
+
+// Featured advisory is the most recent one
+const featuredAdvisory = sortedAdvisories[0];
+
+// Recent advisories (excluding the featured one)
+const recentAdvisories = sortedAdvisories.slice(1, 7);
+---
+
+<Layout title="Security Advisories | 0daysec">
+  <section class="py-8">
+    <div class="max-w-3xl mx-auto text-center mb-8">
+      <h1 class="text-3xl md:text-4xl font-display text-white mb-4">Security Advisory Database</h1>
+      <p class="text-gray-400">
+        A collection of in-depth vulnerability advisories and security research reports published by 0daysec, 
+        including technical writeups, CVE analyses, exploitation techniques, and remediation guidance.
+      </p>
+    </div>
+    
+    <div class="mb-10">
+      <SearchBar />
+    </div>
+    
+    {featuredAdvisory && (
+      <div class="mb-12">
+        <h2 class="text-xl font-display text-white mb-6 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-cyberblue-500"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          Featured Advisory
+        </h2>
+        
+        <FeaturedAdvisory 
+          title={featuredAdvisory.data.title}
+          description={featuredAdvisory.data.description}
+          publishDate={new Date(featuredAdvisory.data.publishDate)}
+          cveId={featuredAdvisory.data.cveId}
+          vendor={featuredAdvisory.data.vendor}
+          severity={featuredAdvisory.data.severity}
+          patchStatus={featuredAdvisory.data.patchStatus}
+          slug={featuredAdvisory.slug}
+        />
+      </div>
+    )}
+    
+    <div>
+      <h2 class="text-xl font-display text-white mb-6 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-cyberblue-500"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Recent Advisories
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {recentAdvisories.map((advisory) => (
+          <AdvisoryCard
+            title={advisory.data.title}
+            description={advisory.data.description}
+            publishDate={new Date(advisory.data.publishDate)}
+            cveId={advisory.data.cveId}
+            vendor={advisory.data.vendor}
+            severity={advisory.data.severity}
+            patchStatus={advisory.data.patchStatus}
+            slug={advisory.slug}
+          />
+        ))}
+      </div>
+      
+      <div class="mt-8 text-center">
+        <a href="/advisories" class="inline-flex items-center py-2 px-6 bg-cyberdark-700 hover:bg-cyberdark-600 text-white rounded-md transition-colors">
+          View All Advisories
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+  
+  <section class="py-12 bg-cyberdark-800 rounded-lg mt-12">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center mb-10">
+        <div class="inline-block p-2 bg-cyberdark-700 rounded-lg mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyberblue-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-display text-white mb-4">Security Research at 0daysec</h2>
+        <p class="text-gray-400">
+          Dedicated to discovering and documenting security vulnerabilities across various platforms and applications.
+          Our research aids in creating more secure systems for everyone.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="p-6 bg-cyberdark-700 rounded-lg">
+          <div class="text-cyberblue-500 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+          </div>
+          <h3 class="text-xl font-display text-white mb-2">Vulnerability Discovery</h3>
+          <p class="text-gray-400">
+            Identifying new security vulnerabilities in software systems through systematic testing and analysis.
+          </p>
+        </div>
+        
+        <div class="p-6 bg-cyberdark-700 rounded-lg">
+          <div class="text-cyberblue-500 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </div>
+          <h3 class="text-xl font-display text-white mb-2">Responsible Disclosure</h3>
+          <p class="text-gray-400">
+            Following ethical security practices by reporting vulnerabilities to vendors before public disclosure.
+          </p>
+        </div>
+        
+        <div class="p-6 bg-cyberdark-700 rounded-lg">
+          <div class="text-cyberblue-500 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          </div>
+          <h3 class="text-xl font-display text-white mb-2">Technical Documentation</h3>
+          <p class="text-gray-400">
+            Creating detailed reports with proof-of-concepts to help understand and address security issues.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

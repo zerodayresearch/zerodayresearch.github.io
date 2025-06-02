@@ -1,0 +1,66 @@
+---
+---
+
+<div class="relative w-full max-w-2xl mx-auto">
+  <div class="relative">
+    <input 
+      type="text" 
+      id="search-input" 
+      placeholder="Search advisories by CVE, vendor or keyword..." 
+      class="w-full py-3 pl-12 pr-4 bg-cyberdark-800 border border-cyberdark-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyberblue-500 focus:border-transparent text-gray-300"
+    />
+    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </div>
+  </div>
+  
+  <div id="search-results" class="absolute z-10 w-full mt-2 bg-cyberdark-800 border border-cyberdark-600 rounded-lg shadow-xl hidden">
+    <!-- Search results will be dynamically inserted here -->
+    <div class="p-4 text-gray-400 text-center">No results found</div>
+  </div>
+</div>
+
+<script>
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  
+  if (searchInput && searchResults) {
+    searchInput.addEventListener('input', async (e) => {
+      const query = (e.target as HTMLInputElement).value.trim();
+      
+      if (query.length < 2) {
+        searchResults.classList.add('hidden');
+        return;
+      }
+      
+      try {
+        // In a real implementation, you'd fetch results from your data store
+        // For now, we'll just show/hide the results container
+        searchResults.classList.remove('hidden');
+        
+        // Implement actual search functionality
+        // This would typically involve:
+        // 1. Fetching advisories that match the query
+        // 2. Rendering them in the results container
+      } catch (error) {
+        console.error('Search error:', error);
+      }
+    });
+    
+    // Hide results when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target as Node) && !searchResults.contains(e.target as Node)) {
+        searchResults.classList.add('hidden');
+      }
+    });
+    
+    // Show results when clicking on input
+    searchInput.addEventListener('click', () => {
+      if (searchInput.value.trim().length >= 2) {
+        searchResults.classList.remove('hidden');
+      }
+    });
+  }
+</script>

@@ -1,0 +1,32 @@
+{
+  "name": "zero-day-security-advisory",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.2.5",
+    "@astrojs/react": "^3.0.10",
+    "@astrojs/tailwind": "^5.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.4.1",
+    "octokit": "^3.1.2",
+    "marked": "^11.1.1",
+    "highlight.js": "^11.9.0",
+    "date-fns": "^3.3.1",
+    "@tailwindcss/typography": "^0.5.10",
+    "node-fetch": "^3.3.2",
+    "mermaid": "^10.6.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18"
+  }
+}

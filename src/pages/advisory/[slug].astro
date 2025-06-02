@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import AdvisoryLayout from '../../layouts/AdvisoryLayout.astro';
+
+// Generate paths for all advisories
+export async function getStaticPaths() {
+  const advisories = await getCollection('advisories');
+  
+  return advisories.map(advisory => ({
+    params: { slug: advisory.slug },
+    props: { advisory },
+  }));
+}
+
+const { advisory } = Astro.props;
+const { Content } = await advisory.render();
+---
+
+<AdvisoryLayout
+  title={advisory.data.title}
+  description={advisory.data.description}
+  publishDate={new Date(advisory.data.publishDate)}
+  cveId={advisory.data.cveId}
+  vendor={advisory.data.vendor}
+  affectedProduct={advisory.data.affectedProduct}
+  severity={advisory.data.severity}
+  patchStatus={advisory.data.patchStatus}
+  patchDate={advisory.data.patchDate ? new Date(advisory.data.patchDate) : undefined}
+  discoveryDate={advisory.data.discoveryDate ? new Date(advisory.data.discoveryDate) : undefined}
+  content={advisory.body}
+  slug={advisory.slug}
+>
+  <Content />
+</AdvisoryLayout>

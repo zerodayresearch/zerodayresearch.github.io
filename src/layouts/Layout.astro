@@ -1,0 +1,122 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const { title, description = "A collection of in-depth vulnerability advisories and security research reports published by 0daysec", image = "/og-image.jpg" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} | 0daysec Security Advisory</title>
+    <meta name="description" content={description} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url)} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+	</head>
+	<body class="bg-cyberdark-900 text-gray-300 min-h-screen flex flex-col">
+    <div class="matrix-background"></div>
+		<Header />
+		<main class="flex-grow container mx-auto px-4 py-8">
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<script>
+  // Matrix rain animation effect for background
+  document.addEventListener('DOMContentLoaded', () => {
+    const matrixBackground = document.querySelector('.matrix-background');
+    if (!matrixBackground) return;
+    
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    matrixBackground.appendChild(canvas);
+    
+    // Matrix characters
+    const cyberChars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    const fontSize = 14;
+    const columns = Math.floor(canvas.width / fontSize);
+    
+    // Initialize drops at random positions
+    const drops = Array(columns).fill(0);
+    
+    function draw() {
+      // Semi-transparent black to create fade effect
+      ctx.fillStyle = 'rgba(12, 14, 20, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#29abe2';
+      ctx.font = `${fontSize}px monospace`;
+      
+      for (let i = 0; i < drops.length; i++) {
+        const text = cyberChars.charAt(Math.floor(Math.random() * cyberChars.length));
+        
+        // Draw character
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        
+        // Reset drop to top with random chance after it's passed the screen
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        
+        // Move drop
+        drops[i]++;
+      }
+    }
+    
+    // Animation speed - slower for subtle effect
+    setInterval(draw, 100);
+    
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+  });
+</script>
+
+<style>
+  .matrix-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+</style>
