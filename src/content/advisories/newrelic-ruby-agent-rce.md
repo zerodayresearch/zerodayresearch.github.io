@@ -79,7 +79,7 @@ The vulnerability has received a CVSS 3.1 Base Score of 9.8 (Critical) due to:
 }
 </style>
 
-### Code Example
+### Code Vulnerable
 
 The following proof of concept demonstrates the vulnerability:
 
@@ -177,7 +177,7 @@ Security teams can detect exploitation attempts by monitoring for:
 3. Anomalous system command execution
 4. Unusual metric data patterns in New Relic collectors
 
-Example log analysis:
+Vulnerable log analysis:
 ```bash
 # Search for potential exploitation attempts
 grep -r "json_class" /var/log/newrelic/
