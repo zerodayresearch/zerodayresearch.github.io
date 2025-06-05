@@ -2,7 +2,7 @@
 title: "Valkey Unsigned Integer Underflow Vulnerability"
 description: "A medium severity integer underflow vulnerability in Valkey's networking code that could lead to memory corruption and denial of service."
 publishDate: 2024-01-10
-cveId: "CVE-2024-XXXX"
+cveId: "CVE-2025-XXXXX"
 vendor: "Valkey"
 affectedProduct: "Valkey < v7.2.4"
 severity: "Medium"

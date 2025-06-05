@@ -2,7 +2,7 @@
 title: "Remote Code Execution in New Relic Ruby Agent"
 description: "A critical remote code execution vulnerability in New Relic Ruby Agent's JSON marshaller that allows attackers to execute arbitrary code through unsafe deserialization of untrusted data."
 publishDate: 2025-04-18
-cveId: "CVE-2024-XXXXX"
+cveId: "CVE-2025-XXXXX"
 vendor: "New Relic"
 affectedProduct: "newrelic-ruby-agent < 8.17.0"
 severity: "Critical"

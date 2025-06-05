@@ -2,7 +2,7 @@
 title: "HTTP Response Splitting Vulnerability in Netflix Spectator"
 description: "A critical security vulnerability discovered in Netflix Spectator's IpcServletFilter that allows HTTP response splitting attacks through header injection."
 publishDate: 2024-01-15
-cveId: "CVE-2024-XXXX"
+cveId: "CVE-2025-XXXXX"
 vendor: "Netflix"
 affectedProduct: "spectator < commit da48a0bf1e"
 severity: "High"
