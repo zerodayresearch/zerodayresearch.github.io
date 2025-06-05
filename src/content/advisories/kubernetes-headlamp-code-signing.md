@@ -34,7 +34,8 @@ discoveryDate: 2025-05-28
     controls 
     autoplay 
     muted
-    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+  >
     <source src="/videos/kubernetes-headlamp-poc.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
